@@ -47,8 +47,11 @@ class BaseComponent:
         if isinstance(tree, Xml.ElementTree):
             tree = tree.getroot()
         if tree is not None:
-            self.root_widget = tk.Frame(parent)
-            self.construct(tree, self.root_widget)
+            if isinstance(parent, tk.Wm):
+                self.root_widget = self.construct(tree, parent)
+            else:
+                self.root_widget = tk.Frame(parent)
+                self.construct(tree, self.root_widget)
 
     def __getattr__(self, item):
         if item in self.named_widgets:
@@ -62,7 +65,7 @@ class BaseComponent:
         elif self.template_path:
             return Xml.parse(self.template_path)
 
-    def construct(self, elem: Xml.Element, parent: Union[tk.Widget, tk.Tk]):
+    def construct(self, elem: Xml.Element, parent: Union[tk.Widget, tk.Wm]):
         if elem.tag in self._widget_registry:
             cls = self._widget_registry[elem.tag]
         else:

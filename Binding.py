@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkpf import ViewModel, BindableProperty
-
+from .AutoProperty import AutoProperty
+from tkpf import Bindable
+from .ViewModel import ViewModel
 
 _type_mapping = {
     int: tk.IntVar,
@@ -12,7 +13,7 @@ _type_mapping = {
 
 class Binding:
     def __init__(self,
-                 source: ViewModel, source_prop: BindableProperty,
+                 source: ViewModel, source_prop: Bindable,
                  target: tk.Widget, target_prop: str,
                  to_model: bool, to_view: bool):
         self.source = source
@@ -20,8 +21,9 @@ class Binding:
         self.var = _type_mapping[source_prop.dtype]()
         self.target = target
         self.target_property = target_prop
-        if source_prop.default_value is not None:
-            self.var.set(source_prop.default_value)
+        if isinstance(source_prop.wrapped_property, AutoProperty)\
+                and source_prop.wrapped_property.default_value is not None:
+            self.var.set(source_prop.wrapped_property.default_value)
         self.to_view = to_view
         self.to_model = to_model
         self.add_observer(self.observer)

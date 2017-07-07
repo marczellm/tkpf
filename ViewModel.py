@@ -1,11 +1,14 @@
-from .BindableProperty import BindableProperty
+from .AutoProperty import AutoProperty
+from .Bindable import Bindable
 
 
 class ViewModelMeta(type):
     def __new__(cls, name, bases, namespace):
         for name, member in namespace.items():
-            if isinstance(member, BindableProperty):
+            if isinstance(member, AutoProperty):
                 member.name = name
+            elif isinstance(member, Bindable) and isinstance(member.wrapped_property, AutoProperty):
+                member.wrapped_property.name = name
         return super().__new__(cls, name, bases, namespace)
 
 
@@ -14,5 +17,7 @@ class ViewModel(metaclass=ViewModelMeta):
         super().__init__()
 
         for name, member in type(self).__dict__.items():
-            if isinstance(member, BindableProperty):
-                setattr(self, member.private_membername, member.default_value or member.dtype())
+            if isinstance(member, AutoProperty):
+                member.fset(self, member.default_value or member.dtype())
+            elif isinstance(member, Bindable) and isinstance(member.wrapped_property, AutoProperty):
+                member.fset(self, member.wrapped_property.default_value or member.dtype())

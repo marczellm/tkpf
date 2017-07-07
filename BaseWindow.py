@@ -15,5 +15,4 @@ class BaseWindow(BaseComponent):
 
     def show(self):
         self.parent.wm_title(self.title)
-        widget = self.construct(self.parsed_template().getroot(), self.parent)
-        widget.mainloop()
+        self.root_widget.mainloop()
