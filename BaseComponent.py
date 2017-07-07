@@ -11,6 +11,16 @@ from .Binding import Binding
 from .misc import path
 from .ViewModel import ViewModel
 
+_variable_counterparts = {
+    ('Button', 'text'): 'textvariable',
+    ('Checkbutton', 'text'): 'textvariable',
+    ('Menubutton', 'text'): 'textvariable',
+    ('RadioButton', 'text'): 'textvariable',
+    ('Label', 'text'): 'textvariable',
+    ('Message', 'text'): 'textvariable',
+    ('Progressbar', 'value'): 'variable'
+}
+
 
 class BaseComponent:
     _widget_registry = copy.copy(tk.__dict__)
@@ -91,7 +101,7 @@ class BaseComponent:
     def process_attributes(self, widget, attrib: dict):
         bindings = []
 
-        for key, name in attrib.items():
+        for key, name in copy.copy(attrib).items():
             if 'command' in key:
                 attrib[key] = getattr(self, name) if hasattr(self, name) else getattr(self.model, name)
             elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
@@ -109,6 +119,9 @@ class BaseComponent:
                                   to_model=to_model, to_view=to_view)
                 if 'variable' in key:
                     attrib[key] = binding.var
+                elif (type(widget).__name__, key) in _variable_counterparts:
+                    attrib[_variable_counterparts[(type(widget).__name__, key)]] = binding.var
+                    del attrib[key]
                 else:
                     attrib[key] = getattr(self.model, name)
                     if to_view:
