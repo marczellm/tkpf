@@ -86,16 +86,11 @@ class BaseComponent:
         return component
 
     def process_attributes(self, widget, attrib: dict):
-        config_args = {k: v for k, v in attrib.items() if '-' not in k}
-        pack_args = {k[5:]: v for k, v in attrib.items() if k.startswith('pack-')}
-        grid_args = {k[5:]: v for k, v in attrib.items() if k.startswith('grid-')}
-        place_args = {k[6:]: v for k, v in attrib.items() if k.startswith('place-')}
-
         bindings = []
 
-        for key, name in config_args.items():
+        for key, name in attrib.items():
             if 'command' in key:
-                config_args[key] = getattr(self, name) if hasattr(self, name) else getattr(self.model, name)
+                attrib[key] = getattr(self, name) if hasattr(self, name) else getattr(self.model, name)
             elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
                 to_view = False
                 to_model = False
@@ -110,9 +105,9 @@ class BaseComponent:
                                   target=widget, target_prop=key,
                                   to_model=to_model, to_view=to_view)
                 if 'variable' in key:
-                    config_args[key] = binding.var
+                    attrib[key] = binding.var
                 else:
-                    config_args[key] = getattr(self.model, name)
+                    attrib[key] = getattr(self.model, name)
                     if to_view:
                         binding.add_observer(lambda val: widget.config(**{key: val}))
                     if to_model:
@@ -131,6 +126,11 @@ class BaseComponent:
             columns = widget.grid_size()
             for i in range(columns[0]):
                 widget.grid_columnconfigure(i, weight=1)
+
+        config_args = {k: v for k, v in attrib.items() if '-' not in k}
+        pack_args = {k[5:]: v for k, v in attrib.items() if k.startswith('pack-')}
+        grid_args = {k[5:]: v for k, v in attrib.items() if k.startswith('grid-')}
+        place_args = {k[6:]: v for k, v in attrib.items() if k.startswith('place-')}
 
         widget.config(**config_args)
         if pack_args:
