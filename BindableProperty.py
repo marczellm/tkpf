@@ -1,15 +1,15 @@
 
 class BindableProperty(property):
-    def __init__(self, default_value=None, datatype=None, name=None):
-        self.dtype = datatype
+    def __init__(self, arg=str, name=None):
         self.name = name
-        self.default_value = default_value
         self.bindings = []
 
-        if default_value is not None:
-            self.dtype = type(default_value)
+        if isinstance(arg, type):
+            self.dtype = arg
+            self.default_value = None
         else:
-            self.dtype = datatype or str
+            self.default_value = arg
+            self.dtype = type(arg)
 
         def getter(this):
             return getattr(this, self.private_membername)

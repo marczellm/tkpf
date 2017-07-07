@@ -1,0 +1,14 @@
+<Frame pack-anchor="nw" pack-padx="5">
+     <LabelFrame text="Options" pack-anchor="w" pack-fill="x">
+        <Radiobutton pack-anchor="w" variable="[(choice)]" value="1">
+            Option 1
+        </Radiobutton>
+        <Radiobutton pack-anchor="w" variable="[(choice)]" value="2">
+            Option 2
+        </Radiobutton>
+         <Combobox pack-anchor="w" textvariable="(selected_suboption)" values="[available_suboptions]"
+                   name="combobox"/>
+        <NumericEntry pack-anchor="w" textvariable="(numeric_value)"/>
+        <Button command="do_stuff">Do stuff</Button>
+    </LabelFrame>
+</Frame>
