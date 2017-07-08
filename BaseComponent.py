@@ -99,7 +99,12 @@ class BaseComponent:
         if elem.text and elem.text.strip():
             elem.attrib['text'] = elem.text.strip()
 
-        self.process_attributes(widget, elem.attrib)
+        self.process_attributes(component, widget, elem.attrib)
+
+        if any(ch.winfo_manager() == 'grid' for ch in widget.children.values()):
+            columns = widget.grid_size()
+            for i in range(columns[0]):
+                widget.grid_columnconfigure(i, weight=1)
 
         return component
 
@@ -139,29 +144,30 @@ class BaseComponent:
                 warn('Property "{}" is not a variable: binding back to model not supported'.format(target_property))
             return {target_property: getattr(self.model, binding_expr)}
 
-    def process_attributes(self, widget, attrib: dict):
+    def process_attributes(self, component, widget, attrib: dict):
         for key, name in copy.copy(attrib).items():
             if 'command' in key:
                 attrib[key] = getattr(self, name) if hasattr(self, name) else getattr(self.model, name)
             elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
                 attrib.update(self.bind(widget, key, name))
 
-        if any(ch.winfo_manager() == 'grid' for ch in widget.children.values()):
-            columns = widget.grid_size()
-            for i in range(columns[0]):
-                widget.grid_columnconfigure(i, weight=1)
-
         config_args = {k: v for k, v in attrib.items() if '-' not in k}
         pack_args = {k[5:]: v for k, v in attrib.items() if k.startswith('pack-')}
         grid_args = {k[5:]: v for k, v in attrib.items() if k.startswith('grid-')}
         place_args = {k[6:]: v for k, v in attrib.items() if k.startswith('place-')}
+        custom_args = {k: v for k, v in attrib.items()
+                       if '-' in k and not any(k.startswith(p) for p in ['tkpf-', 'grid-', 'pack-', 'place-'])}
 
         widget.config(**config_args)
-        if pack_args:
-            widget.pack(**pack_args)
-        elif grid_args:
+
+        if grid_args:
             widget.grid(**grid_args)
         elif place_args:
             widget.place(**place_args)
         else:
-            widget.pack()
+            widget.pack(**pack_args)
+
+        component.config(**custom_args)
+
+    def config(self, **kwargs):
+        pass
