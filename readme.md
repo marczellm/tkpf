@@ -125,13 +125,15 @@ class CustomProgressbar(BaseComponent):
     template = '<Progressbar name="progressbar" variable="[value]" maximum="[target]"/>'
 
     def __init__(self, parent, **kwargs):
-        super().__init__(parent, model=ProgressbarModel(), **kwargs)
+        super().__init__(parent, **kwargs)
 ```
 
 and you can use it like this:
 ```xml
-<CustomProgressbar />
+<CustomProgressbar tkpf-model="[progressbar_model]"/>
 ```
+
+where `progressbar_model` is an attribute or property on your main viewmodel.
 
 ## Caveats
 This is a work in progress. Look at the project issues to see what's not supported yet.

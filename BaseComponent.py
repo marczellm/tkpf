@@ -81,9 +81,14 @@ class BaseComponent:
         else:
             cls = self._component_registry[elem.tag]
 
-        widget_name = elem.attrib.pop('name') if 'name' in elem.attrib else None
-        component = cls(parent, name=widget_name)
+        widget_name = elem.attrib.pop('name', None)
+        viewmodel_name = elem.attrib.pop('tkpf-model', None)
+        viewmodel = getattr(self.model, viewmodel_name[1:-1]) if viewmodel_name else None
+        component = cls(parent, name=widget_name, model=viewmodel)
         widget = component.root_widget if isinstance(component, BaseComponent) else component
+
+        if 'tkpf-model' in elem.attrib:
+            component.model = elem.attrib['tkpf-model'][1:-1]
 
         for child in elem:
             self.construct(child, widget)
@@ -98,45 +103,48 @@ class BaseComponent:
 
         return component
 
-    def process_attributes(self, widget, attrib: dict):
-        bindings = []
+    def bind(self, widget, target_property, binding_expr) -> dict:
+        to_view = False
+        to_model = False
+        if binding_expr.startswith('[') and binding_expr.endswith(']'):
+            binding_expr = binding_expr[1:-1]
+            to_view = True
+        if binding_expr.startswith('(') and binding_expr.endswith(')'):
+            binding_expr = binding_expr[1:-1]
+            to_model = True
+        source_property = getattr(type(self.model), binding_expr)
+        binding = Binding(source=self.model, source_prop=source_property,
+                          target=widget, target_prop=target_property,
+                          to_model=to_model, to_view=to_view)
 
+        # Unsubscribe previous binding
+        binding_key = str(widget) + '.' + binding.target_property
+        if binding_key in self.bindings:
+            previous = self.bindings.pop(binding_key)
+            previous.source_property.bindings.remove(previous)
+
+        # Subscribe new binding
+        self.bindings[binding_key] = binding
+        source_property.bindings.append(binding)
+
+        if 'variable' in target_property:
+            return {target_property: binding.var}
+        elif (type(widget).__name__, target_property) in _variable_counterparts:
+            return {_variable_counterparts[(type(widget).__name__, target_property)]: binding.var,
+                    target_property: None}
+        else:
+            if to_view:
+                binding.add_observer(lambda val: widget.config(**{target_property: val}))
+            if to_model:
+                warn('Property "{}" is not a variable: binding back to model not supported'.format(target_property))
+            return {target_property: getattr(self.model, binding_expr)}
+
+    def process_attributes(self, widget, attrib: dict):
         for key, name in copy.copy(attrib).items():
             if 'command' in key:
                 attrib[key] = getattr(self, name) if hasattr(self, name) else getattr(self.model, name)
             elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
-                to_view = False
-                to_model = False
-                if name.startswith('[') and name.endswith(']'):
-                    name = name[1:-1]
-                    to_view = True
-                if name.startswith('(') and name.endswith(')'):
-                    name = name[1:-1]
-                    to_model = True
-                source_property = getattr(type(self.model), name)
-                binding = Binding(source=self.model, source_prop=source_property,
-                                  target=widget, target_prop=key,
-                                  to_model=to_model, to_view=to_view)
-                if 'variable' in key:
-                    attrib[key] = binding.var
-                elif (type(widget).__name__, key) in _variable_counterparts:
-                    attrib[_variable_counterparts[(type(widget).__name__, key)]] = binding.var
-                    del attrib[key]
-                else:
-                    attrib[key] = getattr(self.model, name)
-                    if to_view:
-                        binding.add_observer(lambda val: widget.config(**{key: val}))
-                    if to_model:
-                        warn('Property "{}" is not a variable: binding direction to model not supported'.format(key))
-                bindings.append(binding)
-                source_property.bindings.append(binding)
-
-        for binding in bindings:
-            binding_key = str(widget) + '.' + binding.target_property
-            if binding_key in self.bindings:
-                previous = self.bindings.pop(binding_key)
-                previous.source_property.bindings.remove(previous)
-            self.bindings[binding_key] = binding
+                attrib.update(self.bind(widget, key, name))
 
         if any(ch.winfo_manager() == 'grid' for ch in widget.children.values()):
             columns = widget.grid_size()
