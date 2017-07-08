@@ -123,9 +123,6 @@ class ProgressbarModel(ViewModel):
     
 class CustomProgressbar(BaseComponent):
     template = '<Progressbar name="progressbar" variable="[value]" maximum="[target]"/>'
-
-    def __init__(self, parent, **kwargs):
-        super().__init__(parent, **kwargs)
 ```
 
 and you can use it like this:
