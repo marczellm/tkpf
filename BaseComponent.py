@@ -92,30 +92,13 @@ class BaseComponent:
             return Xml.parse(self.template_path)
 
     def construct(self, elem: Xml.Element, parent: Union[tk.Widget, tk.Wm]):
-        if elem.tag in self._widget_registry:
-            cls = self._widget_registry[elem.tag]
-        else:
-            cls = self._component_registry[elem.tag]
-
-        widget_name = elem.attrib.pop('name', None)
-        viewmodel_name = elem.attrib.pop('tkpf-model', None)
-        viewmodel = getattr(self.model, viewmodel_name[1:-1]) if viewmodel_name else None
-        component = cls(parent, name=widget_name, model=viewmodel)
-        widget = component.root_widget if isinstance(component, BaseComponent) else component
-
-        if 'tkpf-model' in elem.attrib:
-            component.model = elem.attrib['tkpf-model'][1:-1]
-
-        if widget_name:
-            self.named_widgets[widget_name] = component
-
         if elem.text and elem.text.strip():
             elem.attrib['text'] = elem.text.strip()
 
-        for child in elem:
-            self.construct(child, widget)
+        component, widget = self.add_child(parent, elem.tag, elem.attrib)
 
-        self.process_attributes(component, widget, elem.attrib)
+        for child in elem:
+            (component if isinstance(component, BaseComponent) else self).construct(child, widget)
 
         if any(ch.winfo_manager() == 'grid' for ch in widget.children.values()):
             columns = widget.grid_size()
@@ -124,9 +107,46 @@ class BaseComponent:
 
         return component
 
-    def bind(self, widget, target_property, binding_expr) -> dict:
+    def add_child(self, parent, classname, attrib):
+        if classname in self._component_registry:
+            cls = self._component_registry[classname]
+        else:
+            cls = self._widget_registry[classname]
+
+        widget_name = attrib.pop('name', None)
+        viewmodel_name = attrib.pop('tkpf-model', None)
+        viewmodel = getattr(self.model, viewmodel_name[1:-1]) if viewmodel_name else None
+        component = cls(parent, name=widget_name, model=viewmodel)
+        widget = component.root_widget if isinstance(component, BaseComponent) else component
+
+        if widget_name:
+            self.named_widgets[widget_name] = component
+
+        self.process_attributes(component, widget, attrib)
+
+        return component, widget
+
+    def bind(self, target_property, binding_expr,
+             widget=None, widget_name=None, widget_classname=None, widget_config_method=None) -> dict:
+        """
+        Create a binding
+
+        :param target_property: the name of the property that we're binding to
+        :param binding_expr: the binding expression
+        :param widget: the Tkinter object
+        :param widget_name: the name of the Tkinter object
+        :param widget_classname: the classname of the Tkinter object
+        :param widget_config_method: the method that should be invoked by the binding in the case of a
+        non-variable target property
+        :return: a dictionary that should be passed to the config method to finally create the binding
+        """
         to_view = False
         to_model = False
+        if widget:
+            widget_name = str(widget)
+            widget_classname = type(widget).__name__
+            widget_config_method = widget.config
+
         if binding_expr.startswith('[') and binding_expr.endswith(']'):
             binding_expr = binding_expr[1:-1]
             to_view = True
@@ -139,7 +159,7 @@ class BaseComponent:
                           to_model=to_model, to_view=to_view)
 
         # Unsubscribe previous binding
-        binding_key = str(widget) + '.' + binding.target_property
+        binding_key = widget_name + '.' + binding.target_property
         if binding_key in self.bindings:
             previous = self.bindings.pop(binding_key)
             previous.source_property.bindings.remove(previous)
@@ -150,22 +170,22 @@ class BaseComponent:
 
         if 'variable' in target_property:
             return {target_property: binding.var}
-        elif (type(widget).__name__, target_property) in _variable_counterparts:
-            return {_variable_counterparts[(type(widget).__name__, target_property)]: binding.var,
+        elif (widget_classname, target_property) in _variable_counterparts:
+            return {_variable_counterparts[(widget_classname, target_property)]: binding.var,
                     target_property: None}
         else:
             if to_view:
-                binding.add_observer(lambda val: widget.config(**{target_property: val}))
+                binding.add_observer(lambda val: widget_config_method(**{target_property: val}))
             if to_model:
                 warn('Property "{}" is not a variable: binding back to model not supported'.format(target_property))
             return {target_property: getattr(self.model, binding_expr)}
 
-    def process_attributes(self, component, widget, attrib: dict):
+    def process_attributes(self, component, widget, attrib):
         for key, name in copy.copy(attrib).items():
             if 'command' in key:
                 attrib[key] = getattr(self, name) if hasattr(self, name) else getattr(self.model, name)
             elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
-                attrib.update(self.bind(widget, key, name))
+                attrib.update(self.bind(key, name, widget))
 
         config_args = {k: v for k, v in attrib.items() if '-' not in k}
         pack_args = {k[5:]: v for k, v in attrib.items() if k.startswith('pack-')}
@@ -180,7 +200,7 @@ class BaseComponent:
             widget.grid(**grid_args)
         elif place_args:
             widget.place(**place_args)
-        else:
+        elif not isinstance(widget, tk.Menu):
             widget.pack(**pack_args)
 
         component.config(**custom_args)

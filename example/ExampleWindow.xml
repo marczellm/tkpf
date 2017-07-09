@@ -1,4 +1,7 @@
 <Frame pack-anchor="nw" pack-padx="5">
+    <Menu>
+        <Command label="Jo"/>
+    </Menu>
     <LabelFrame text="Options" pack-anchor="w" pack-fill="x">
         <OptionMenu pack-anchor="w" values="[dropdown_options]" variable="(optionmenu_selected)" name="optionmenu"/>
         <Radiobutton pack-anchor="w" variable="[(choice)]" value="1">
