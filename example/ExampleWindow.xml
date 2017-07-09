@@ -1,15 +1,16 @@
 <Frame pack-anchor="nw" pack-padx="5">
     <LabelFrame text="Options" pack-anchor="w" pack-fill="x">
+        <OptionMenu pack-anchor="w" values="[dropdown_options]" variable="(optionmenu_selected)" name="optionmenu"/>
         <Radiobutton pack-anchor="w" variable="[(choice)]" value="1">
             Option 1
         </Radiobutton>
         <Radiobutton pack-anchor="w" variable="[(choice)]" value="2">
             Option 2
         </Radiobutton>
-        <Combobox pack-anchor="w" textvariable="(selected_suboption)" values="[available_suboptions]"
+        <Combobox pack-anchor="w" textvariable="(combobox_selected)" values="[dropdown_options]"
                   name="combobox"/>
         <NumericEntry pack-anchor="w" textvariable="(numeric_value)"/>
+        <ExampleComponent custom-text="Custom component with text"/>
         <Button command="do_stuff">Do stuff</Button>
-        <ExampleComponent custom-text="Custom text"/>
     </LabelFrame>
 </Frame>

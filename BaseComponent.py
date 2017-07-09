@@ -8,8 +8,9 @@ from tkinter import ttk
 from warnings import warn
 
 from .Binding import Binding
-from .misc import path
 from .ViewModel import ViewModel
+from .OptionMenu import OptionMenu
+from .misc import path
 
 _variable_counterparts = {
     ('Button', 'text'): 'textvariable',
@@ -25,8 +26,12 @@ _variable_counterparts = {
 class BaseComponent:
     _widget_registry = copy.copy(tk.__dict__)
     _widget_registry.update(ttk.__dict__)
+    _widget_registry['OptionMenu'] = OptionMenu
     _component_registry = {}
     _windows = []
+
+    _counter = 0  # Unique ID for inclusion in the Tkinter name
+
     template = ''
     template_path = ''
 
@@ -53,15 +58,26 @@ class BaseComponent:
         self.named_widgets = {}
         self.root_widget = None
         self.bindings = {}
+        self.root_widget = self.create(parent, **kwargs)
+
+    def create(self, parent, **_):
+        """
+        Parse the template string and construct the view hierarchy based on it.
+        You can override this in a component if the component creates its view hierarchy in custom logic.
+
+        :return: the root widget of the newly created view hierarchy
+        """
         tree = self.parsed_template()
         if isinstance(tree, Xml.ElementTree):
             tree = tree.getroot()
         if tree is not None:
             if isinstance(parent, tk.Wm):
-                self.root_widget = self.construct(tree, parent)
+                return self.construct(tree, parent)
             else:
-                self.root_widget = tk.Frame(parent)
-                self.construct(tree, self.root_widget)
+                root_widget = tk.Frame(parent, name=type(self).__name__.lower() + str(self._counter))
+                type(self)._counter += 1
+                self.construct(tree, root_widget)
+                return root_widget
 
     def __getattr__(self, item):
         if item in self.named_widgets:
@@ -90,14 +106,14 @@ class BaseComponent:
         if 'tkpf-model' in elem.attrib:
             component.model = elem.attrib['tkpf-model'][1:-1]
 
-        for child in elem:
-            self.construct(child, widget)
-
         if widget_name:
             self.named_widgets[widget_name] = component
 
         if elem.text and elem.text.strip():
             elem.attrib['text'] = elem.text.strip()
+
+        for child in elem:
+            self.construct(child, widget)
 
         self.process_attributes(component, widget, elem.attrib)
 
