@@ -1,11 +1,10 @@
 <Frame pack-anchor="nw" pack-padx="5">
     <Menu>
-        <Menu label="File">
-            <Command label="New"/>
-            <Command label="Open"/>
+        <Menu label="File" name="themenu">
+            <Command command="file_open">Open</Command>
             <Separator/>
-            <Checkbutton label="Checkb"/>
-            <Radiobutton label="Radiob"/>
+            <Checkbutton>Checkbutton</Checkbutton>
+            <Radiobutton>Radiobutton</Radiobutton>
         </Menu>
     </Menu>
     <LabelFrame text="Options" pack-anchor="w" pack-fill="x">

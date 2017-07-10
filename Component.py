@@ -13,8 +13,8 @@ class Component(Directive.Structural):
     template = None
     template_path = None
 
-    def __init__(self, parent, model=None, **_):
-        super().__init__(parent, model)
+    def __init__(self, parent_widget, parent_directive, model=None, **_):
+        super().__init__(parent_widget, parent_directive, model)
         self.bindings = {}
 
     def create(self, parent, **_):
@@ -49,9 +49,11 @@ class Component(Directive.Structural):
 
         return ret
 
-    def add_child(self, parent, classname, attrib):
+    def add_child(self, parent, classname, attrib, text=None):
+        if text:
+            attrib['text'] = text
         directive, widget = self.inflate(parent, classname,
                                          widget_name=attrib.pop('name', None),
                                          viewmodel_expr=attrib.pop('tkpf-model', None))
-        self.process_attributes(widget, attrib)
+        self.process_attributes(widget, self.resolve_bindings(widget, attrib))
         return directive, widget

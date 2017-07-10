@@ -10,9 +10,9 @@ class Window(Component):
         return window
 
     def __init__(self, model):
-        super().__init__(self.new_window(), model)
+        super().__init__(self.new_window(), None, model)
         self.title = ''
 
     def show(self):
-        self.parent.wm_title(self.title)
+        self.parent_widget.wm_title(self.title)
         self.root_widget.mainloop()

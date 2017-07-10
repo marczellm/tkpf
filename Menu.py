@@ -11,12 +11,20 @@ class Menu(Directive.Structural):
             parent.winfo_toplevel().config(menu=menu)
         return menu
 
-    def add_child(self, parent, classname, attrib):
+    def add_child(self, parent, classname, attrib, text=None):
+        name = attrib.pop('name', None)
+        if text:
+            attrib['label'] = text
         if classname == 'Menu':
-            component, widget = super().inflate(parent, classname)
+            directive, widget = super().inflate(parent, classname)
             widget.config(tearoff=0)
-            self.root_widget.add_cascade(menu=widget, **attrib)
-            return component, widget
+            self.root_widget.add_cascade(menu=widget, **self.resolve_bindings(widget, attrib))
+            self.named_widgets[name] = directive or widget
+            return directive, widget
         else:
-            self.root_widget.add(classname.lower(), **attrib)
-        return None, self.root_widget
+            self.root_widget.add(classname.lower(), **self.resolve_bindings(None, attrib))
+            return None, self.root_widget
+
+    @property
+    def named_widgets(self):
+        return self.parent_directive.named_widgets

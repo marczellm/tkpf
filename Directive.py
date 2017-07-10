@@ -45,12 +45,17 @@ class Structural(Directive):
         super().__init_subclass__()
         Registry.register(cls)
 
-    def __init__(self, parent, model=None):
-        self.parent = parent
+    def __init__(self, parent_widget, parent_directive, model=None):
+        self.parent_widget = parent_widget
+        self.parent_directive = parent_directive
         self.model = model
         self.bindings = {}
-        self.named_widgets = {}
-        self.root_widget = self.create(parent)
+        self._named_widgets = {}
+        self.root_widget = self.create(parent_widget)
+
+    @property
+    def named_widgets(self):
+        return self._named_widgets
 
     def __getattr__(self, item):
         if item in self.named_widgets:
@@ -74,26 +79,21 @@ class Structural(Directive):
         :return: the newly constructed view hierarchy, in the form of its root widget or directive
         """
 
+        text = None
         if elem.text and elem.text.strip():
-            elem.attrib['text'] = elem.text.strip()
+            text = elem.text.strip()
 
-        directive, widget = self.add_child(parent, elem.tag, elem.attrib)
+        directive, widget = self.add_child(parent, elem.tag, elem.attrib, text)
 
         for child in elem:
             (directive or self).construct(child, widget)
 
         return directive or widget
 
-    def add_child(self, parent, classname, attrib) -> tuple:
+    def add_child(self, parent, classname, attrib, text=None) -> tuple:
         """ This method gets called when, during XML tree traversal, this directive contains a child element.
         This method should decide what to do with that child, and return (if applicable)
-        the root directive and root widget resulting from that decision
-
-        :param parent:
-        :param classname:
-        :param attrib:
-        :return:
-        """
+        the root directive and root widget resulting from that decision """
 
     def inflate(self, parent, classname, widget_name=None, viewmodel_expr=None):
         """ Find and instantiate one widget or directive class, attaching it to the given widget as parent """
@@ -105,32 +105,43 @@ class Structural(Directive):
                 viewmodel = self.model
 
             cls = Registry.directives[classname]
-            component = cls(parent, model=viewmodel)
-            widget = component.root_widget
+            directive = cls(parent, self, model=viewmodel)
+            widget = directive.root_widget
         else:
             cls = Registry.widgets[classname]
             widget = cls(parent, name=widget_name)
-            component = None
+            directive = None
 
         if widget_name:
-            self.named_widgets[widget_name] = component or widget
+            self.named_widgets[widget_name] = directive or widget
 
-        return component, widget
+        return directive, widget
 
-    def process_attributes(self, widget, attrib):
-        for key, name in copy(attrib).items():
+    def command_lookup(self, name):
+        cur = self
+        while cur and not hasattr(cur, name):
+            cur = cur.parent_directive
+        return getattr(cur, name) if cur else getattr(self.model, name)
+
+    def resolve_bindings(self, widget, attrib, config_method=None):
+        """ Take a dictionary of attributes and replace command and data binding expressions with
+        actual references """
+        ret = copy(attrib)
+        for key, name in attrib.items():
             if 'command' in key:
-                attrib[key] = getattr(self, name) if hasattr(self, name) else getattr(self.model, name)
+                ret[key] = self.command_lookup(name)
             elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
-                attrib.update(self.bind(key, name, widget))
+                ret.update(self.bind(key, name, widget, widget_config_method=config_method))
+        return ret
 
+    @staticmethod
+    def process_attributes(widget, attrib):
         config_args = {k: v for k, v in attrib.items() if '-' not in k}
         pack_args = {k[5:]: v for k, v in attrib.items() if k.startswith('pack-')}
         grid_args = {k[5:]: v for k, v in attrib.items() if k.startswith('grid-')}
         place_args = {k[6:]: v for k, v in attrib.items() if k.startswith('place-')}
 
         widget.config(**config_args)
-
         if grid_args:
             widget.grid(**grid_args)
         elif place_args:
