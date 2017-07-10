@@ -4,7 +4,8 @@
             <Command command="file_open">Open</Command>
             <Separator/>
             <Checkbutton>Checkbutton</Checkbutton>
-            <Radiobutton>Radiobutton</Radiobutton>
+            <Radiobutton variable="[(choice)]" value="1">Option 1</Radiobutton>
+            <Radiobutton variable="[(choice)]" value="2">Option 2</Radiobutton>
         </Menu>
     </Menu>
     <LabelFrame text="Options" pack-anchor="w" pack-fill="x">

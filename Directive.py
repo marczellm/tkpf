@@ -61,7 +61,7 @@ class Structural(Directive):
         if item in self.named_widgets:
             return self.named_widgets[item]
         else:
-            raise AttributeError
+            raise AttributeError(item)
 
     def create(self, parent):
         """ Create the view hierarchy.
@@ -123,7 +123,7 @@ class Structural(Directive):
             cur = cur.parent_directive
         return getattr(cur, name) if cur else getattr(self.model, name)
 
-    def resolve_bindings(self, widget, attrib, config_method=None):
+    def resolve_bindings(self, widget, attrib, **kwargs):
         """ Take a dictionary of attributes and replace command and data binding expressions with
         actual references """
         ret = copy(attrib)
@@ -131,7 +131,7 @@ class Structural(Directive):
             if 'command' in key:
                 ret[key] = self.command_lookup(name)
             elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
-                ret.update(self.bind(key, name, widget, widget_config_method=config_method))
+                ret.update(self.bind(key, name, widget, **kwargs))
         return ret
 
     @staticmethod
@@ -188,7 +188,7 @@ class Structural(Directive):
                           config_method=widget_config_method)
 
         # Unsubscribe previous binding
-        binding_key = widget_name + '.' + binding.target_property
+        binding_key = widget_name + '.Tkpf_targetprop:' + binding.target_property
         if binding_key in self.bindings:
             previous = self.bindings.pop(binding_key)
             previous.source_property.bindings.remove(previous)

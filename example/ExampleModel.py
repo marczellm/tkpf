@@ -21,5 +21,3 @@ class ExampleModel(ViewModel):
         self.__num = 5
         self.dropdown_options = ('suboption1', 'suboption2', 'suboption3')
 
-    def do_stuff(self):
-        print(self.optionmenu_selected)

@@ -1,3 +1,4 @@
+import functools
 import tkinter as tk
 from . import Directive
 
@@ -22,7 +23,12 @@ class Menu(Directive.Structural):
             self.named_widgets[name] = directive or widget
             return directive, widget
         else:
-            self.root_widget.add(classname.lower(), **self.resolve_bindings(None, attrib))
+            last = 1 + (self.root_widget.index('end') or 0)
+            pseudo_name = str(self.root_widget) + '.Tkpf_menuitem:' + str(last)
+            config_method = functools.partial(self.root_widget.entryconfig, last)
+            self.root_widget.add(classname.lower(), **self.resolve_bindings(None, attrib,
+                                                                            widget_name=pseudo_name,
+                                                                            widget_config_method=config_method))
             return None, self.root_widget
 
     @property

@@ -6,4 +6,7 @@ class ExampleWindow(Window):
     template_path = 'tkpf/example/ExampleWindow.xml'
 
     def file_open(self):
-        filedialog.askopenfile()
+        filedialog.askopenfilename()
+
+    def do_stuff(self):
+        print('Stuff')
