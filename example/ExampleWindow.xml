@@ -1,6 +1,12 @@
 <Frame pack-anchor="nw" pack-padx="5">
     <Menu>
-        <Command label="Jo"/>
+        <Menu label="File">
+            <Command label="New"/>
+            <Command label="Open"/>
+            <Separator/>
+            <Checkbutton label="Checkb"/>
+            <Radiobutton label="Radiob"/>
+        </Menu>
     </Menu>
     <LabelFrame text="Options" pack-anchor="w" pack-fill="x">
         <OptionMenu pack-anchor="w" values="[dropdown_options]" variable="(optionmenu_selected)" name="optionmenu"/>

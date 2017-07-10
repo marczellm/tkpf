@@ -1,19 +1,22 @@
 import tkinter as tk
-from tkpf import BaseComponent
+from . import Directive
 
 
-class Menu(BaseComponent):
+class Menu(Directive.Structural):
     """ Translates the XML hierarchy into proper method calls when constructing a menu """
 
-    def __init__(self, *args, **kwargs):
-        self.menu = None
-        super().__init__(*args, **kwargs)
-
-    def create(self, parent, **_):
-        self.menu = tk.Menu(parent)
-        parent.winfo_toplevel().config(menu=self.menu)
-        return self.menu
+    def create(self, parent):
+        menu = tk.Menu(parent)
+        if not isinstance(parent, tk.Menu):
+            parent.winfo_toplevel().config(menu=menu)
+        return menu
 
     def add_child(self, parent, classname, attrib):
-        self.menu.add(classname.lower(), **attrib)
-        return None, self.menu
+        if classname == 'Menu':
+            component, widget = super().inflate(parent, classname)
+            widget.config(tearoff=0)
+            self.root_widget.add_cascade(menu=widget, **attrib)
+            return component, widget
+        else:
+            self.root_widget.add(classname.lower(), **attrib)
+        return None, self.root_widget

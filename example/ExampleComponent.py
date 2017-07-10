@@ -1,7 +1,7 @@
-from tkpf import BaseComponent
+from tkpf import Component
 
 
-class ExampleComponent(BaseComponent):
+class ExampleComponent(Component):
     template = '<Label name="thelabel">Example component text</Label>'
 
     def config(self, **kwargs):

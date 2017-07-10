@@ -3,13 +3,13 @@ from .Bindable import Bindable
 
 
 class ViewModelMeta(type):
-    def __new__(cls, name, bases, namespace):
+    def __new__(mcs, name, bases, namespace):
         for name, member in namespace.items():
             if isinstance(member, AutoProperty):
                 member.name = name
             elif isinstance(member, Bindable) and isinstance(member.wrapped_property, AutoProperty):
                 member.wrapped_property.name = name
-        return super().__new__(cls, name, bases, namespace)
+        return super().__new__(mcs, name, bases, namespace)
 
 
 class ViewModel(metaclass=ViewModelMeta):

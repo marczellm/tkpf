@@ -14,8 +14,7 @@ class Bindable(property):
 
     def notify_bindings(self, val, this):
         for binding in self.bindings:
-            if binding.to_view and binding.source is this:
-                binding.var.set(val)
+            binding.notify_to_view(val, this)
 
     def wrap_setter(self, fset):
         def wrapped_setter(this, val):

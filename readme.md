@@ -1,5 +1,11 @@
-`tkpf` is a library for Tkinter GUIs that aims to implement one-way or two-way databinding
-heavily influenced by WPF (Windows Presentation Foundation) and lightly by Angular 2+.
+`tkpf` is a library for building Tkinter GUIs in a paradigm
+influenced by WPF (Windows Presentation Foundation) and Angular.
+
+Main features are:
+
+- Declarative view hierarchy and layout in XML
+- One-way and two-way data binding
+- Componentization support
 
 # Tutorial
 ## The layout template
@@ -30,11 +36,11 @@ Options such as `pack-anchor="nw"` or `grid-row="0"` specify the layout and will
 Tkinter layout manager method, in this case `.pack(anchor='nw')`.
 
 ## The view class
-You display the GUI by creating a class derived from `BaseWindow` and showing it.
+You display the GUI by creating a class derived from `Window` and showing it.
 You have to supply the viewmodel in the constructor.
 
 ```python
-class ExampleWindow(BaseWindow):
+class ExampleWindow(Window):
     template_path = 'ExampleWindow.xml'
 
 ExampleWindow(ExampleModel()).show()
@@ -42,8 +48,16 @@ ExampleWindow(ExampleModel()).show()
 If you want to keep the layout XML in this file inline, you can do that too:
 
 ```python
-class ExampleWindow(BaseWindow):
+class ExampleWindow(Window):
     template = '<Label>Some text</Label>'
+```
+
+Setting the window title:
+
+```python
+    def __init__(self, model):
+        super().__init__(model)
+        self.title = 'My application'
 ```
 
 In the view class you can write event handlers. Make that button work for example:
@@ -57,11 +71,12 @@ This also shows how you can access widgets by name in methods of the view class.
 
 ## The viewmodel class
 ```python
+
 class ExampleModel(ViewModel):
     choice = Bindable(AutoProperty(1))
     available_suboptions = Bindable(AutoProperty())
     selected_suboption = Bindable(AutoProperty())
-
+    
     def __init__(self):
         super().__init__()
         self.available_suboptions = ('suboption1', 'suboption2')
@@ -107,7 +122,7 @@ You can use custom widgets derived from Tkinter widget classes.
 The only thing you have to do is call 
 
 ```python
-BaseComponent.register(YourCustomWidgetClass)
+Component.register(YourCustomWidgetClass)
 ```
 
 before loading a template that uses it.
@@ -121,7 +136,8 @@ class ProgressbarModel(ViewModel):
     value = BindableProperty(0)
     target = BindableProperty(100)
     
-class CustomProgressbar(BaseComponent):
+
+class CustomProgressbar(Component):
     template = '<Progressbar name="progressbar" variable="[value]" maximum="[target]"/>'
 ```
 
@@ -135,7 +151,7 @@ where `progressbar_model` is an attribute or property on your main viewmodel.
 You can add custom, bindable attributes to components, like this:
 
 ```python
-class ExampleComponent(BaseComponent):
+class ExampleComponent(Component):
     template = '<Label name="thelabel">Example component text</Label>'
 
     def config(self, **kwargs):
@@ -148,4 +164,6 @@ and then using it like this:
 ```
 The only requirement is that the attribute name contains a hyphen.
 ## Caveats
+`tkpf` only supports Python 3.5+.
+
 This is a work in progress. Look at the project issues to see what's not supported yet.

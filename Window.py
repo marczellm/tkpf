@@ -1,8 +1,8 @@
 import tkinter as tk
-from tkpf.BaseComponent import BaseComponent
+from tkpf import Component
 
 
-class BaseWindow(BaseComponent):
+class Window(Component):
     @classmethod
     def new_window(cls):
         window = tk.Toplevel() if cls._windows else tk.Tk()
