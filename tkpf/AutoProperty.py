@@ -1,4 +1,3 @@
-
 class AutoProperty(property):
     def __init__(self, arg=str, name=None):
         self.name = name
