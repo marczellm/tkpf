@@ -1,5 +1,5 @@
-from .AutoProperty import AutoProperty
-from .Bindable import Bindable
+from tkpf.AutoProperty import AutoProperty
+from tkpf.Bindable import Bindable
 
 
 class ViewModelMeta(type):

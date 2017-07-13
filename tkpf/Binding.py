@@ -3,7 +3,7 @@ from typing import Callable
 from warnings import warn
 
 from tkpf import Bindable
-from .ViewModel import ViewModel
+from tkpf.ViewModel import ViewModel
 
 _type_mapping = {
     int: tk.IntVar,

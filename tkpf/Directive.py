@@ -4,9 +4,9 @@ import xml.etree.ElementTree as Xml
 import tkinter as tk
 from tkinter import ttk
 
-from .Binding import Binding
-from .NumericEntry import NumericEntry
-from .OptionMenu import OptionMenu
+from tkpf.Binding import Binding
+from tkpf.NumericEntry import NumericEntry
+from tkpf.OptionMenu import OptionMenu
 
 
 _variable_counterparts = {

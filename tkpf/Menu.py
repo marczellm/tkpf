@@ -1,6 +1,6 @@
 import functools
 import tkinter as tk
-from . import Directive
+from tkpf import Directive
 
 
 class Menu(Directive.Structural):

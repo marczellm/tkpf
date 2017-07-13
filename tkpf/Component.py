@@ -3,7 +3,7 @@ import xml.etree.ElementTree as Xml
 from typing import Union
 import tkinter as tk
 
-from . import Directive
+from tkpf import Directive
 
 
 class Component(Directive.Structural):
