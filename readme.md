@@ -67,7 +67,11 @@ In the view class you can write event handlers. Make that button work for exampl
         self.combobox.config(state='disabled')
 ```
 
-This also shows how you can access widgets by name in methods of the view class.
+This also shows how you can access widgets by name in methods of the view class. But if you prefer you can access them dynamically like this:
+
+```python
+        self.named_widgets['combobox']
+```
 
 ## The viewmodel class
 ```python
@@ -122,7 +126,7 @@ You can use custom widgets derived from Tkinter widget classes.
 The only thing you have to do is call 
 
 ```python
-Component.register(YourCustomWidgetClass)
+Directive.Registry.register(YourCustomWidgetClass)
 ```
 
 before loading a template that uses it.
