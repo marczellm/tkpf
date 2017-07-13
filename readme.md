@@ -7,6 +7,8 @@ Main features are:
 - One-way and two-way data binding
 - Componentization support
 
+![x1](https://user-images.githubusercontent.com/6771275/28181423-d9c4bfd4-6808-11e7-955a-c0e18219e609.PNG)
+
 # Tutorial
 ## The layout template
 You specify the GUI in an XML file, here named `ExampleWindow.xml`
