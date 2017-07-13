@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='tkpf',
     description=' A GUI library for python/tkinter with two-way data binding',
-    author='Márton Marczell',
+    author='MÃ¡rton Marczell',
     url="https://github.com/marczellm/tkpf",
     version='0.0.1',
     packages=find_packages(),
@@ -17,10 +17,10 @@ Main features are:
  * Componentization support
     """,
     keywords="tkinter",
-    license="GPLv3",
+    license="LGPLv3",
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3',
+        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
     ],
