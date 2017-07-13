@@ -148,7 +148,7 @@ and you can use it like this:
 
 where `progressbar_model` is an attribute or property on your main viewmodel.
 
-You can add custom, bindable attributes to components, like this:
+It is planned that you will be able to add add custom, bindable attributes to components, like this:
 
 ```python
 class ExampleComponent(Component):
@@ -158,7 +158,7 @@ class ExampleComponent(Component):
         self.thelabel.config(text=kwargs['custom-text'])
 ```
 
-and then using it like this:
+and then use them like this:
 ```xml
 <ExampleComponent custom-text="Custom text"/>
 ```
