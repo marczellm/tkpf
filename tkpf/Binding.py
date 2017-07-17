@@ -42,7 +42,10 @@ class Binding:
         Register a callback to be called when the value of ``self.var`` changes
         :param observer: a callable accepting one parameter. The new value will be passed in that.
         """
-        self.var.trace_add('write', lambda *_: observer(self.safe_get()))
+        if hasattr(self.var, 'trace_add'):
+            self.var.trace_add('write', lambda *_: observer(self.safe_get()))
+        else:
+            self.var.trace('w', lambda *_: observer(self.safe_get()))
 
     def safe_get(self):
         try:

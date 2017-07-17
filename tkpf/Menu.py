@@ -1,3 +1,4 @@
+import sys
 import functools
 import tkinter as tk
 from tkpf import Directive
@@ -34,3 +35,7 @@ class Menu(Directive.Structural):
     @property
     def named_widgets(self):
         return self.parent_directive.named_widgets
+
+
+if sys.version_info < (3,6):
+    Directive.Registry.register(Menu)

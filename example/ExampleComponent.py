@@ -1,4 +1,5 @@
-from tkpf import Component
+import sys
+from tkpf import Component, Directive
 
 
 class ExampleComponent(Component):
@@ -6,3 +7,7 @@ class ExampleComponent(Component):
 
     def config(self, **kwargs):
         self.thelabel.config(text=kwargs['custom-text'])
+
+
+if sys.version_info < (3,6):
+    Directive.Registry.register(ExampleComponent)

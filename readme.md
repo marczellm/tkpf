@@ -154,6 +154,12 @@ and you can use it like this:
 
 where `progressbar_model` is an attribute or property on your main viewmodel.
 
+On Python 3.5 you have to register your component before using it. On Python 3.6+ that is automatic.
+
+```python
+Directive.Registry.register(CustomProgressbar)
+```
+
 It is planned that you will be able to add add custom, bindable attributes to components, like this:
 
 ```python
@@ -170,6 +176,6 @@ and then use them like this:
 ```
 The only requirement is that the attribute name contains a hyphen.
 ## Caveats
-`tkpf` only supports Python 3.6+.
+`tkpf` only supports Python 3.5+.
 
 This is a work in progress. Also my first attempt at creating a library. Look at the project issues to see what's not supported yet.
