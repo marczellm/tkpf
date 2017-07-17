@@ -3,7 +3,7 @@ from tkpf import Window
 
 
 class ExampleWindow(Window):
-    template_path = 'tkpf/example/ExampleWindow.xml'
+    template_path = 'example/ExampleWindow.xml'
 
     def file_open(self):
         filedialog.askopenfilename()
