@@ -8,18 +8,21 @@
             <Radiobutton variable="[(choice)]" value="2">Option 2</Radiobutton>
         </Menu>
     </Menu>
-    <LabelFrame text="Options" pack-anchor="w" pack-fill="x">
-        <OptionMenu pack-anchor="w" values="[dropdown_options]" variable="(optionmenu_selected)" name="optionmenu"/>
-        <Radiobutton pack-anchor="w" variable="[(choice)]" value="1">
-            Option 1
-        </Radiobutton>
-        <Radiobutton pack-anchor="w" variable="[(choice)]" value="2">
-            Option 2
-        </Radiobutton>
-        <Combobox pack-anchor="w" textvariable="(combobox_selected)" values="[dropdown_options]"
-                  name="combobox"/>
-        <NumericEntry pack-anchor="w" textvariable="(numeric_value)"/>
-        <ExampleComponent custom-text="Custom component with text"/>
-        <Button command="do_stuff">Do stuff</Button>
-    </LabelFrame>
+    <Notebook pack-anchor="w" pack-fill="x">
+        <LabelFrame text="Options" tab-text="This">
+            <OptionMenu pack-anchor="w" values="[dropdown_options]" variable="(optionmenu_selected)" name="optionmenu"/>
+            <Radiobutton pack-anchor="w" variable="[(choice)]" value="1">
+                Option 1
+            </Radiobutton>
+            <Radiobutton pack-anchor="w" variable="[(choice)]" value="2">
+                Option 2
+            </Radiobutton>
+            <Combobox pack-anchor="w" textvariable="(combobox_selected)" values="[dropdown_options]"
+                      name="combobox"/>
+            <NumericEntry pack-anchor="w" textvariable="(numeric_value)"/>
+            <ExampleComponent custom-text="Custom component with text"/>
+            <Button command="do_stuff">Do stuff</Button>
+        </LabelFrame>
+        <Label tab-text="That">Something completely different</Label>
+    </Notebook>
 </Frame>

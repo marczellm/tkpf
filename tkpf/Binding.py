@@ -63,3 +63,7 @@ class Binding:
         if self.to_view and self.source is source:
             self.var.set(val)
 
+    @staticmethod
+    def is_binding_expr(s):
+        return s.startswith('[') and s.endswith(']') or s.startswith('(') and s.endswith(')')
+

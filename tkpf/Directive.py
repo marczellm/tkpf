@@ -94,6 +94,13 @@ class Structural(Directive):
         """ This method gets called when, during XML tree traversal, this directive contains a child element.
         This method should decide what to do with that child, and return (if applicable)
         the root directive and root widget resulting from that decision """
+        if text:
+            attrib['text'] = text
+        directive, widget = self.inflate(parent, classname,
+                                         widget_name=attrib.pop('name', None),
+                                         viewmodel_expr=attrib.pop('tkpf-model', None))
+        self.process_attributes(widget, self.resolve_bindings(widget, attrib))
+        return directive, widget
 
     def inflate(self, parent, classname, widget_name=None, viewmodel_expr=None):
         """ Find and instantiate one widget or directive class, attaching it to the given widget as parent """
@@ -130,7 +137,7 @@ class Structural(Directive):
         for key, name in attrib.items():
             if 'command' in key:
                 ret[key] = self.command_lookup(name)
-            elif name.startswith('[') and name.endswith(']') or name.startswith('(') and name.endswith(')'):
+            elif Binding.is_binding_expr(name):
                 ret.update(self.bind(key, name, widget, **kwargs))
         return ret
 

@@ -47,12 +47,3 @@ class Component(Directive.Structural):
                     ret.grid_columnconfigure(i, weight=1)
 
         return ret
-
-    def add_child(self, parent, classname, attrib, text=None):
-        if text:
-            attrib['text'] = text
-        directive, widget = self.inflate(parent, classname,
-                                         widget_name=attrib.pop('name', None),
-                                         viewmodel_expr=attrib.pop('tkpf-model', None))
-        self.process_attributes(widget, self.resolve_bindings(widget, attrib))
-        return directive, widget
