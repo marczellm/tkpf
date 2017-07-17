@@ -170,6 +170,6 @@ and then use them like this:
 ```
 The only requirement is that the attribute name contains a hyphen.
 ## Caveats
-`tkpf` only supports Python 3.5+.
+`tkpf` only supports Python 3.6+.
 
 This is a work in progress. Also my first attempt at creating a library. Look at the project issues to see what's not supported yet.
