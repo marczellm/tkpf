@@ -37,5 +37,5 @@ class Menu(Directive.Structural):
         return self.parent_directive.named_widgets
 
 
-if sys.version_info < (3,6):
+if sys.version_info < (3, 6):
     Directive.Registry.register(Menu)

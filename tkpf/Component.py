@@ -7,7 +7,6 @@ from tkpf import Directive
 
 
 class Component(Directive.Structural):
-    _windows = []
     _counter = 0  # Unique ID for inclusion in the Tkinter name
 
     template = None

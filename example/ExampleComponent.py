@@ -9,5 +9,5 @@ class ExampleComponent(Component):
         self.thelabel.config(text=kwargs['custom-text'])
 
 
-if sys.version_info < (3,6):
+if sys.version_info < (3, 6):
     Directive.Registry.register(ExampleComponent)
