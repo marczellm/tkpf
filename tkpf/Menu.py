@@ -1,6 +1,8 @@
 import sys
 import functools
 import tkinter as tk
+from warnings import warn
+
 from tkpf import Directive
 
 
@@ -30,6 +32,8 @@ class Menu(Directive.Structural):
             self.root_widget.add(classname.lower(), **self.resolve_bindings(None, attrib,
                                                                             widget_name=pseudo_name,
                                                                             widget_config_method=config_method))
+            if name:
+                warn('Menu items cannot be named')
             return None, self.root_widget
 
     @property

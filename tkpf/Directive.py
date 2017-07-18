@@ -61,7 +61,7 @@ class Structural(Directive):
         if item in self.named_widgets:
             return self.named_widgets[item]
         else:
-            raise AttributeError(item)
+            raise AttributeError('{} has no widget named "{}"'.format(type(self.model), item))
 
     def create(self, parent):
         """ Create the view hierarchy.
@@ -114,10 +114,12 @@ class Structural(Directive):
             cls = Registry.directives[classname]
             directive = cls(parent, self, model=viewmodel)
             widget = directive.root_widget
-        else:
+        elif classname in Registry.widgets:
             cls = Registry.widgets[classname]
             widget = cls(parent, name=widget_name)
             directive = None
+        else:
+            raise AttributeError('Component or widget "{}" does not exist or was not registered'.format(classname))
 
         if widget_name:
             self.named_widgets[widget_name] = directive or widget
@@ -128,7 +130,12 @@ class Structural(Directive):
         cur = self
         while cur and not hasattr(cur, name):
             cur = cur.parent_directive
-        return getattr(cur, name) if cur else getattr(self.model, name)
+        if cur and hasattr(cur, name):
+            return getattr(cur, name)
+        elif hasattr(self.model, name):
+            return getattr(self.model, name)
+        else:
+            raise AttributeError('Event handler "{}" not found'.format(name))
 
     def resolve_bindings(self, widget, attrib, **kwargs):
         """ Take a dictionary of attributes and replace command and data binding expressions with
@@ -184,7 +191,10 @@ class Structural(Directive):
         if binding_expr.startswith('(') and binding_expr.endswith(')'):
             binding_expr = binding_expr[1:-1]
             to_model = True
-        source_property = getattr(type(self.model), binding_expr)
+        if hasattr(type(self.model), binding_expr):
+            source_property = getattr(type(self.model), binding_expr)
+        else:
+            raise AttributeError('{} has no attribute "{}"'.format(type(self.model), binding_expr))
         original_target = None
         if (widget_classname, target_property) in _variable_counterparts:
             original_target = target_property
