@@ -8,6 +8,7 @@ class Bindable(property):
             super().__init__(wrapped_prop.fget, self.wrap_setter(wrapped_prop.fset), wrapped_prop.fdel)
             self.wrapped_property = wrapped_prop
             self.bindings = []
+            self.observers = []
             self.dtype = typing.get_type_hints(wrapped_prop.fget)['return']
         else:
             super().__init__(*args)
@@ -15,6 +16,8 @@ class Bindable(property):
     def notify_bindings(self, val, this):
         for binding in self.bindings:
             binding.notify_to_view(val, this)
+        for observer in self.observers:
+            observer(val, this)
 
     def wrap_setter(self, fset):
         def wrapped_setter(this, val):
