@@ -10,7 +10,7 @@
     </Menu>
     <Notebook pack-anchor="w" pack-fill="x">
         <Frame tab-text="Main">
-            <LabelFrame text="Options" tab-text="This" pack-padx="5">
+            <LabelFrame text="Options" pack-padx="5">
                 <OptionMenu pack-anchor="w" values="[dropdown_options]" variable="(optionmenu_selected)"
                             name="optionmenu"/>
                 <Radiobutton pack-anchor="w" variable="[(choice)]" value="1">
@@ -23,7 +23,7 @@
                           name="combobox"/>
             </LabelFrame>
             <NumericEntry pack-anchor="w" textvariable="(numeric_value)"/>
-            <ExampleComponent pack-anchor="w" custom-text="Custom component with text"/>
+            <ExampleComponent pack-anchor="w" custom-text="Custom component text"/>
             <Button command="do_stuff">Do stuff</Button>
         </Frame>
         <Frame tab-text="Grid layout">
