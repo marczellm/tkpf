@@ -1,6 +1,5 @@
 from copy import copy
 from typing import Union
-import xml.etree.ElementTree as Xml
 import tkinter as tk
 from tkinter import ttk
 
@@ -69,12 +68,12 @@ class Structural(Directive):
         :return: the root widget of the newly created view hierarchy
         """
 
-    def construct(self, elem: Xml.Element, parent: Union[tk.Widget, tk.Wm]):
+    def construct(self, elem, parent: Union[tk.Widget, tk.Wm]):
         """
-        Given an XML tree and a parent widget, construct the view hierarchy described in the XML,
+        Given a parsed template and a parent widget, construct the view hierarchy,
         with the given widget as its parent
 
-        :param elem: the XML element
+        :param elem: the parsed template
         :param parent: the parent widget
         :return: the newly constructed view hierarchy, in the form of its root widget or directive
         """
@@ -83,15 +82,15 @@ class Structural(Directive):
         if elem.text and elem.text.strip():
             text = elem.text.strip()
 
-        directive, widget = self.add_child(parent, elem.tag, elem.attrib, text)
+        directive, widget = self.add_child(parent, elem.name, elem.attrib, text)
 
-        for child in elem:
+        for child in elem.children:
             (directive or self).construct(child, widget)
 
         return directive or widget
 
     def add_child(self, parent, classname, attrib, text=None) -> tuple:
-        """ This method gets called when, during XML tree traversal, this directive contains a child element.
+        """ This method gets called when, during tree traversal, this directive contains a child element.
         This method should decide what to do with that child, and return (if applicable)
         the root directive and root widget resulting from that decision """
         if text:

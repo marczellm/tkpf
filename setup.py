@@ -7,6 +7,7 @@ setup(
     url="https://github.com/marczellm/tkpf",
     version='0.0.1',
     packages=find_packages(),
+    install_requires=['pyyaml'],
     long_description="""\
 tkpf is a library for building Tkinter GUIs in a paradigm influenced by WPF (Windows Presentation Foundation) and Angular.
 
