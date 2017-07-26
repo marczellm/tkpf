@@ -12,7 +12,7 @@ Main features are:
 
 # Tutorial
 ## The layout template
-You specify the GUI in an XML file, here named `ExampleWindow.xml`
+You specify the GUI in XML or YAML format. Here is a simple example, `ExampleWindow.xml`:
 
 ```xml
 <Frame pack-anchor="nw" pack-padx="5">
@@ -38,13 +38,15 @@ when available.
 Options such as `pack-anchor="nw"` or `grid-row="0"` specify the layout and will be passed to the appropriate 
 Tkinter layout manager method, in this case `.pack(anchor='nw')`.
 
+On how to specify a GUI in YAML format, see `example/ExampleWindow.yaml`.
+
 ## The view class
 You display the GUI by creating a class derived from `Window` and showing it.
 You have to supply the viewmodel in the constructor.
 
 ```python
 class ExampleWindow(Window):
-    template_path = 'ExampleWindow.xml'
+    template_path = 'ExampleWindow.xml'  # 'ExampleWindow.yaml' works too
 
 ExampleWindow(ExampleModel()).show()
 ```
@@ -54,6 +56,18 @@ If you want to keep the layout XML in this file inline, you can do that too:
 class ExampleWindow(Window):
     template = '<Label>Some text</Label>'
 ```
+
+or 
+
+```python
+class ExampleWindow(Window):
+    template_yaml = '''
+    Label:
+      text: Some text
+    '''
+```
+
+
 
 Setting the window title:
 

@@ -6,6 +6,7 @@ import tkinter as tk
 from tkpf import Directive
 from tkpf import parser
 
+
 class Component(Directive.Structural):
     _counter = 0  # Unique ID for inclusion in the Tkinter name
 
@@ -30,15 +31,15 @@ class Component(Directive.Structural):
 
     def parsed_template(self):
         if self.template:
-            return parser.XmlWrapper(Xml.fromstring(self.template))
+            return parser.wrap(Xml.fromstring(self.template))
         elif self.template_yaml:            
-            return parser.DictWrapper(yaml.load(self.template_yaml))
+            return parser.wrap(yaml.load(self.template_yaml))
         elif self.template_path:
             if self.template_path.lower().endswith('.xml'):
-                return parser.XmlWrapper(Xml.parse(self.template_path))
+                return parser.wrap(Xml.parse(self.template_path))
             elif self.template_path.lower().endswith('.yaml'):
                 with open(self.template_path) as bf:
-                    return yaml.load(bf)
+                    return parser.wrap(yaml.load(bf))
         raise Exception('Component template not specified')
 
     def construct(self, elem, parent: Union[tk.Widget, tk.Wm]):

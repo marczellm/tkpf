@@ -65,5 +65,5 @@ class Binding:
 
     @staticmethod
     def is_binding_expr(s):
-        return s.startswith('[') and s.endswith(']') or s.startswith('(') and s.endswith(')')
+        return isinstance(s, str) and (s.startswith('[') and s.endswith(']') or s.startswith('(') and s.endswith(')'))
 

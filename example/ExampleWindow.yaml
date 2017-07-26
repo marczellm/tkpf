@@ -3,86 +3,90 @@ Frame:
   pack-padx: 5
   children:
   - Menu:
-    - Menu:
-      label: File
-      name: themenu
       children:
-      - Command:
-          label: Open
-          command: file_open
-      - Separator
-      - Checkbutton: Checkbutton
-      - Radiobutton:
-          label: Option 1
-          variable: '[(choice)]'
-          value: 1
-      - Radiobutton:
-          label: Option 2
-          variable: '[(choice)]'
-          value: 2
-
-  Notebook:
-    pack-anchor: w
-    pack-fill: x
-    children:
-    - Frame:
-      tab-text: Main
-      children:
-      - LabelFrame:
-          text: Options
-          pack-padx: 5
+      - Menu:
+          label: File
+          name: themenu
           children:
-          - OptionMenu:
-              pack-anchor: w
-              values: '[dropdown_options]'
-              variable: (optionmenu_selected)
-              name: optionmenu
+          - Command:
+              label: Open
+              command: file_open
+          - Separator: ~
+          - Checkbutton:
+              label: Checkbutton
           - Radiobutton:
-              text: Option 1
-              pack-anchor: w
+              label: Option 1
               variable: '[(choice)]'
               value: 1
           - Radiobutton:
-              text: Option 2
-              pack-anchor: w
+              label: Option 2
               variable: '[(choice)]'
               value: 2
-          - Combobox:
+
+  - Notebook:
+      pack-anchor: w
+      pack-fill: x
+      children:
+      - Frame:
+          tab-text: Main
+          children:
+          - LabelFrame:
+              text: Options
+              pack-padx: 5
+              children:
+              - OptionMenu:
+                  pack-anchor: w
+                  values: '[dropdown_options]'
+                  variable: (optionmenu_selected)
+                  name: optionmenu
+              - Radiobutton:
+                  text: Option 1
+                  pack-anchor: w
+                  variable: '[(choice)]'
+                  value: 1
+              - Radiobutton:
+                  text: Option 2
+                  pack-anchor: w
+                  variable: '[(choice)]'
+                  value: 2
+              - Combobox:
+                  pack-anchor: w
+                  textvariable: (combobox_selected)
+                  values: '[dropdown_options]'
+                  name: combobox
+          - NumericEntry:
               pack-anchor: w
-              textvariable: (combobox_selected)
-              values: '[dropdown_options]'
-              name: combobox
-      - NumericEntry:
-          pack-anchor: w
-          textvariable: (numeric_value)
-      - ExampleComponent:
-          pack-anchor: w
-          custom-text: Custom component text
-      - Button:
-          text: Do stuff
-          command: do_stuff
-    - Frame:
-        tab-text: Grid layout
-        children:
-        - Label:
-            grid-row: 0
-            grid-column: 0
-            text: Cell
-        - Label:
-            grid-row: 0
-            grid-column: 1
-            text: Cellll
-        - Label:
-            grid-row: 1
-            grid-column: 0
-            text: Cellllll
-        - Label:
-            grid-row: 1
-            grid-column: 1
-            text: Cellllllll
-        - Button:
-            grid-row: 2
-            grid-column: 0
-        - Button:
-            grid-row: 2
-            grid-column: 1
+              textvariable: (numeric_value)
+          - ExampleComponent:
+              pack-anchor: w
+              custom-text: Custom component text
+          - Button:
+              text: Do stuff
+              command: do_stuff
+      - Frame:
+          tab-text: Grid layout
+          children:
+          - Label:
+              grid-row: 0
+              grid-column: 0
+              text: Cell
+          - Label:
+              grid-row: 0
+              grid-column: 1
+              text: Cellll
+          - Label:
+              grid-row: 1
+              grid-column: 0
+              text: Cellllll
+          - Label:
+              grid-row: 1
+              grid-column: 1
+              text: Cellllllll
+          - Button:
+              grid-row: 2
+              grid-column: 0
+              text: Button
+          - Button:
+              grid-row: 2
+              grid-column: 1
+              text: Butttton
