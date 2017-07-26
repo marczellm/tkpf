@@ -13,7 +13,7 @@ tkpf is a library for building Tkinter GUIs in a paradigm influenced by WPF (Win
 
 Main features are:
 
- * Declarative view hierarchy and layout in XML
+ * Declarative view hierarchy and layout in XML or YAML
  * One-way and two-way data binding
  * Componentization support
     """,
