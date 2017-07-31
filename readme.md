@@ -143,7 +143,7 @@ You can use custom widgets derived from Tkinter widget classes.
 The only thing you have to do is call 
 
 ```python
-Directive.Registry.register(YourCustomWidgetClass)
+Registry.register(YourCustomWidgetClass)
 ```
 
 before loading a template that uses it.
@@ -169,28 +169,9 @@ and you can use it like this:
 
 where `progressbar_model` is an attribute or property on your main viewmodel.
 
-On Python 3.5 you have to register your component before using it. On Python 3.6+ that is automatic.
+It is planned that you will be able to add add custom, bindable attributes to components. The only requirement is that the attribute name contains a hyphen.
 
-```python
-Directive.Registry.register(CustomProgressbar)
-```
-
-It is planned that you will be able to add add custom, bindable attributes to components, like this:
-
-```python
-class ExampleComponent(Component):
-    template = '<Label name="thelabel">Example component text</Label>'
-
-    def config(self, **kwargs):
-        self.thelabel.config(text=kwargs['custom-text'])
-```
-
-and then use them like this:
-```xml
-<ExampleComponent custom-text="Custom text"/>
-```
-The only requirement is that the attribute name contains a hyphen.
 ## Caveats
-`tkpf` only supports Python 3.5+.
+`tkpf` only supports Python 3.6+.
 
 This is a work in progress. Also my first attempt at creating a library. Look at the project issues to see what's not supported yet.

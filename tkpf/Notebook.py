@@ -1,10 +1,10 @@
 import sys
 from tkinter import ttk
 
-from tkpf import Directive
+from tkpf.Structural import Structural
 
 
-class Notebook(Directive.Structural):
+class Notebook(Structural):
     def create(self, parent):
         return ttk.Notebook(parent)
 
@@ -19,7 +19,3 @@ class Notebook(Directive.Structural):
     @property
     def named_widgets(self):
         return self.parent_directive.named_widgets
-
-
-if sys.version_info < (3, 6):
-    Directive.Registry.register(Notebook)

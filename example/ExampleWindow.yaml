@@ -59,7 +59,7 @@ Frame:
               textvariable: (numeric_value)
           - ExampleComponent:
               pack-anchor: w
-              custom-text: Custom component text
+              tkpf-model: '[component_model]'
           - Button:
               text: Do stuff
               command: do_stuff

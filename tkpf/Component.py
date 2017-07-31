@@ -3,11 +3,11 @@ import yaml
 from typing import Union
 import tkinter as tk
 
-from tkpf import Directive
+from tkpf.Structural import Structural
 from tkpf import parser
 
 
-class Component(Directive.Structural):
+class Component(Structural):
     _counter = 0  # Unique ID for inclusion in the Tkinter name
 
     template = None

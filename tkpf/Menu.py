@@ -3,10 +3,10 @@ import functools
 import tkinter as tk
 from warnings import warn
 
-from tkpf import Directive
+from tkpf.Structural import Structural
 
 
-class Menu(Directive.Structural):
+class Menu(Structural):
     """ Translates the XML hierarchy into proper method calls when constructing a menu """
 
     def create(self, parent):
@@ -39,7 +39,3 @@ class Menu(Directive.Structural):
     @property
     def named_widgets(self):
         return self.parent_directive.named_widgets
-
-
-if sys.version_info < (3, 6):
-    Directive.Registry.register(Menu)
