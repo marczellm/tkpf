@@ -8,4 +8,4 @@ from tkpf.NumericEntry import NumericEntry
 from tkpf.Menu import Menu
 from tkpf.Notebook import Notebook
 from tkpf.Registry import Registry
-from tkpf.Attribute import TkpfModel
+from tkpf.TkpfModel import TkpfModel

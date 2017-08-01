@@ -1,10 +1,10 @@
 import sys
 from tkinter import ttk
 
-from tkpf.Structural import Structural
+from tkpf.WidgetWrapper import WidgetWrapper
 
 
-class Notebook(Structural):
+class Notebook(WidgetWrapper):
     def create(self, parent):
         return ttk.Notebook(parent)
 

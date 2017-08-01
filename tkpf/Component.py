@@ -3,11 +3,11 @@ import yaml
 from typing import Union
 import tkinter as tk
 
-from tkpf.Structural import Structural
+from tkpf.WidgetWrapper import WidgetWrapper
 from tkpf import parser
 
 
-class Component(Structural):
+class Component(WidgetWrapper):
     _counter = 0  # Unique ID for inclusion in the Tkinter name
 
     template = None

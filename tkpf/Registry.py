@@ -5,7 +5,6 @@ from tkinter import ttk
 
 from tkpf.NumericEntry import NumericEntry
 from tkpf.OptionMenu import OptionMenu
-from tkpf.Directive import Directive
 
 
 class Registry:
@@ -17,9 +16,13 @@ class Registry:
 
     @classmethod
     def register(cls, typ: type):
+        from tkpf.Directive import Directive
         name = typ.__name__
         if issubclass(typ, Directive):
-            cls.directives[name] = typ
+            if typ.attribute:
+                cls.attributes[typ.attribute] = typ
+            else:
+                cls.directives[name] = typ
         elif issubclass(cls, tk.Widget):
             cls.widgets[name] = typ
 

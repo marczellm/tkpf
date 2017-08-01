@@ -3,10 +3,10 @@ import functools
 import tkinter as tk
 from warnings import warn
 
-from tkpf.Structural import Structural
+from tkpf.WidgetWrapper import WidgetWrapper
 
 
-class Menu(Structural):
+class Menu(WidgetWrapper):
     """ Translates the XML hierarchy into proper method calls when constructing a menu """
 
     def create(self, parent):
