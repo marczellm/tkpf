@@ -6,6 +6,9 @@ from tkpf import Directive
 
 class Notebook(Directive.Structural):
     def create(self, parent):
+        if parent.tk.call('tk', 'windowingsystem') == 'aqua':
+            s = ttk.Style()
+            s.configure('TNotebook.Tab', padding=(12, 8, 12, 0))
         return ttk.Notebook(parent)
 
     def add_child(self, parent, classname, attrib, text=None):

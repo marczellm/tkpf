@@ -9,6 +9,8 @@ Main features are:
 
 ![tkpf](https://user-images.githubusercontent.com/6771275/28272256-3ddb29a4-6b0b-11e7-8072-c962235d58d8.png)
 ![x1](https://user-images.githubusercontent.com/6771275/28181423-d9c4bfd4-6808-11e7-955a-c0e18219e609.PNG)
+![mac](https://user-images.githubusercontent.com/6771275/48013133-e82a6e80-e123-11e8-92c0-b0a13467dc7e.png)
+
 
 # Tutorial
 ## The layout template
